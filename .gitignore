@@ -43,3 +43,16 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+# --- FALTANTES IMPORTANTES PARA GRUPOS ---
+
+# 1. Rutas locales de Android (CRÍTICO: Evita conflictos Mac vs Windows)
+android/local.properties
+android/.gradle
+.gradle
+
+# 2. Archivos generados de iOS (Evita conflictos de firma)
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+
+# 3. Archivos generados de plugins (Evita basura)
+.flutter-plugins
