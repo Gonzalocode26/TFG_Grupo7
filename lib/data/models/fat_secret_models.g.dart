@@ -6,6 +6,66 @@ part of 'fat_secret_models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+_$FatSecretTokenImpl _$$FatSecretTokenImplFromJson(Map<String, dynamic> json) =>
+    _$FatSecretTokenImpl(
+      accessToken: json['access_token'] as String,
+      tokenType: json['token_type'] as String,
+      expiresIn: (json['expires_in'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$$FatSecretTokenImplToJson(
+        _$FatSecretTokenImpl instance) =>
+    <String, dynamic>{
+      'access_token': instance.accessToken,
+      'token_type': instance.tokenType,
+      'expires_in': instance.expiresIn,
+    };
+
+_$FatSecretSearchResponseImpl _$$FatSecretSearchResponseImplFromJson(
+        Map<String, dynamic> json) =>
+    _$FatSecretSearchResponseImpl(
+      foodsSearch: FoodSearchContainer.fromJson(
+          json['foods_search'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$FatSecretSearchResponseImplToJson(
+        _$FatSecretSearchResponseImpl instance) =>
+    <String, dynamic>{
+      'foods_search': instance.foodsSearch,
+    };
+
+_$FoodSearchContainerImpl _$$FoodSearchContainerImplFromJson(
+        Map<String, dynamic> json) =>
+    _$FoodSearchContainerImpl(
+      maxResults: json['max_results'] as String?,
+      totalResults: json['total_results'] as String?,
+      pageNumber: json['page_number'] as String?,
+      results: json['results'] == null
+          ? null
+          : FoodList.fromJson(json['results'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$FoodSearchContainerImplToJson(
+        _$FoodSearchContainerImpl instance) =>
+    <String, dynamic>{
+      'max_results': instance.maxResults,
+      'total_results': instance.totalResults,
+      'page_number': instance.pageNumber,
+      'results': instance.results,
+    };
+
+_$FoodListImpl _$$FoodListImplFromJson(Map<String, dynamic> json) =>
+    _$FoodListImpl(
+      food: (json['food'] as List<dynamic>)
+          .map((e) => FatSecretFood.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$$FoodListImplToJson(_$FoodListImpl instance) =>
+    <String, dynamic>{
+      'food': instance.food,
+    };
+
 _$FatSecretFoodImpl _$$FatSecretFoodImplFromJson(Map<String, dynamic> json) =>
     _$FatSecretFoodImpl(
       foodId: json['food_id'] as String,
