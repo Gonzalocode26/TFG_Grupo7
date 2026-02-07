@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:dio/dio.dart';
 import '../../../core/constants/api_constants.dart';
 import '../../models/fat_secret_models.dart';
@@ -33,7 +35,7 @@ class FatSecretFoodService {
         throw Exception('Search failed: ${response.statusCode}');
       }
 
-      // 🔍 DEBUGGING: Imprime el JSON raw
+      // 🔍 DEBUGGING:
       print('📦 RAW JSON RESPONSE:');
       print(response.data);
       print('📦 TIPO: ${response.data.runtimeType}');
