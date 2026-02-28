@@ -59,20 +59,53 @@ class FoodList with _$FoodList {
 }
 
 // ============================================
-// FOOD MODEL
+// FOOD MODEL (con imágenes)
 // ============================================
 
 @freezed
 class FatSecretFood with _$FatSecretFood {
+  const FatSecretFood._(); // Constructor privado para custom getters
+
   const factory FatSecretFood({
     @JsonKey(name: 'food_id') required String foodId,
     @JsonKey(name: 'food_name') required String foodName,
     @JsonKey(name: 'food_type') String? foodType,
     @JsonKey(name: 'food_url') String? foodUrl,
+    @JsonKey(name: 'food_images') FoodImagesWrapper? foodImages,
   }) = _FatSecretFood;
 
   factory FatSecretFood.fromJson(Map<String, dynamic> json) =>
       _$FatSecretFoodFromJson(json);
+
+  // Getter para obtener la URL de la imagen principal
+  String? get mainImageUrl {
+    if (foodImages?.foodImage == null) return null;
+
+    final images = foodImages!.foodImage;
+
+    // Si es una lista, tomar la primera
+    if (images is List && images.isNotEmpty) {
+      return images[0].imageUrl;
+    }
+
+    // Si es un objeto único
+    if (images is FatSecretImage) {
+      return images.imageUrl;
+    }
+
+    return null;
+  }
+}
+
+// Wrapper para manejar la estructura anidada de imágenes
+@freezed
+class FoodImagesWrapper with _$FoodImagesWrapper {
+  const factory FoodImagesWrapper({
+    @JsonKey(name: 'food_image') dynamic foodImage, // Puede ser List o objeto único
+  }) = _FoodImagesWrapper;
+
+  factory FoodImagesWrapper.fromJson(Map<String, dynamic> json) =>
+      _$FoodImagesWrapperFromJson(json);
 }
 
 // ============================================

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
+import 'presentation/screens/main_screen.dart';  // ← Nuevo import
 
 class MacrosDiaryApp extends StatelessWidget {
   const MacrosDiaryApp({super.key});
@@ -9,14 +10,7 @@ class MacrosDiaryApp extends StatelessWidget {
     return MaterialApp(
       title: 'Macros Diary',
       theme: AppTheme.light,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Macros Diary'),
-        ),
-        body: const Center(
-          child: Text('App lista para empezar 🚀'),
-        ),
-      ),
+      home: const MainScreen(),  // ← Cambiar aquí
       debugShowCheckedModeBanner: false,
     );
   }

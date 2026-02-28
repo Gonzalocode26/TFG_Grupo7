@@ -760,6 +760,8 @@ mixin _$FatSecretFood {
   String? get foodType => throw _privateConstructorUsedError;
   @JsonKey(name: 'food_url')
   String? get foodUrl => throw _privateConstructorUsedError;
+  @JsonKey(name: 'food_images')
+  FoodImagesWrapper? get foodImages => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -777,7 +779,10 @@ abstract class $FatSecretFoodCopyWith<$Res> {
       {@JsonKey(name: 'food_id') String foodId,
       @JsonKey(name: 'food_name') String foodName,
       @JsonKey(name: 'food_type') String? foodType,
-      @JsonKey(name: 'food_url') String? foodUrl});
+      @JsonKey(name: 'food_url') String? foodUrl,
+      @JsonKey(name: 'food_images') FoodImagesWrapper? foodImages});
+
+  $FoodImagesWrapperCopyWith<$Res>? get foodImages;
 }
 
 /// @nodoc
@@ -797,6 +802,7 @@ class _$FatSecretFoodCopyWithImpl<$Res, $Val extends FatSecretFood>
     Object? foodName = null,
     Object? foodType = freezed,
     Object? foodUrl = freezed,
+    Object? foodImages = freezed,
   }) {
     return _then(_value.copyWith(
       foodId: null == foodId
@@ -815,7 +821,23 @@ class _$FatSecretFoodCopyWithImpl<$Res, $Val extends FatSecretFood>
           ? _value.foodUrl
           : foodUrl // ignore: cast_nullable_to_non_nullable
               as String?,
+      foodImages: freezed == foodImages
+          ? _value.foodImages
+          : foodImages // ignore: cast_nullable_to_non_nullable
+              as FoodImagesWrapper?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $FoodImagesWrapperCopyWith<$Res>? get foodImages {
+    if (_value.foodImages == null) {
+      return null;
+    }
+
+    return $FoodImagesWrapperCopyWith<$Res>(_value.foodImages!, (value) {
+      return _then(_value.copyWith(foodImages: value) as $Val);
+    });
   }
 }
 
@@ -831,7 +853,11 @@ abstract class _$$FatSecretFoodImplCopyWith<$Res>
       {@JsonKey(name: 'food_id') String foodId,
       @JsonKey(name: 'food_name') String foodName,
       @JsonKey(name: 'food_type') String? foodType,
-      @JsonKey(name: 'food_url') String? foodUrl});
+      @JsonKey(name: 'food_url') String? foodUrl,
+      @JsonKey(name: 'food_images') FoodImagesWrapper? foodImages});
+
+  @override
+  $FoodImagesWrapperCopyWith<$Res>? get foodImages;
 }
 
 /// @nodoc
@@ -849,6 +875,7 @@ class __$$FatSecretFoodImplCopyWithImpl<$Res>
     Object? foodName = null,
     Object? foodType = freezed,
     Object? foodUrl = freezed,
+    Object? foodImages = freezed,
   }) {
     return _then(_$FatSecretFoodImpl(
       foodId: null == foodId
@@ -867,18 +894,24 @@ class __$$FatSecretFoodImplCopyWithImpl<$Res>
           ? _value.foodUrl
           : foodUrl // ignore: cast_nullable_to_non_nullable
               as String?,
+      foodImages: freezed == foodImages
+          ? _value.foodImages
+          : foodImages // ignore: cast_nullable_to_non_nullable
+              as FoodImagesWrapper?,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$FatSecretFoodImpl implements _FatSecretFood {
+class _$FatSecretFoodImpl extends _FatSecretFood {
   const _$FatSecretFoodImpl(
       {@JsonKey(name: 'food_id') required this.foodId,
       @JsonKey(name: 'food_name') required this.foodName,
       @JsonKey(name: 'food_type') this.foodType,
-      @JsonKey(name: 'food_url') this.foodUrl});
+      @JsonKey(name: 'food_url') this.foodUrl,
+      @JsonKey(name: 'food_images') this.foodImages})
+      : super._();
 
   factory _$FatSecretFoodImpl.fromJson(Map<String, dynamic> json) =>
       _$$FatSecretFoodImplFromJson(json);
@@ -895,10 +928,13 @@ class _$FatSecretFoodImpl implements _FatSecretFood {
   @override
   @JsonKey(name: 'food_url')
   final String? foodUrl;
+  @override
+  @JsonKey(name: 'food_images')
+  final FoodImagesWrapper? foodImages;
 
   @override
   String toString() {
-    return 'FatSecretFood(foodId: $foodId, foodName: $foodName, foodType: $foodType, foodUrl: $foodUrl)';
+    return 'FatSecretFood(foodId: $foodId, foodName: $foodName, foodType: $foodType, foodUrl: $foodUrl, foodImages: $foodImages)';
   }
 
   @override
@@ -911,13 +947,15 @@ class _$FatSecretFoodImpl implements _FatSecretFood {
                 other.foodName == foodName) &&
             (identical(other.foodType, foodType) ||
                 other.foodType == foodType) &&
-            (identical(other.foodUrl, foodUrl) || other.foodUrl == foodUrl));
+            (identical(other.foodUrl, foodUrl) || other.foodUrl == foodUrl) &&
+            (identical(other.foodImages, foodImages) ||
+                other.foodImages == foodImages));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, foodId, foodName, foodType, foodUrl);
+      Object.hash(runtimeType, foodId, foodName, foodType, foodUrl, foodImages);
 
   @JsonKey(ignore: true)
   @override
@@ -933,12 +971,15 @@ class _$FatSecretFoodImpl implements _FatSecretFood {
   }
 }
 
-abstract class _FatSecretFood implements FatSecretFood {
+abstract class _FatSecretFood extends FatSecretFood {
   const factory _FatSecretFood(
-      {@JsonKey(name: 'food_id') required final String foodId,
-      @JsonKey(name: 'food_name') required final String foodName,
-      @JsonKey(name: 'food_type') final String? foodType,
-      @JsonKey(name: 'food_url') final String? foodUrl}) = _$FatSecretFoodImpl;
+          {@JsonKey(name: 'food_id') required final String foodId,
+          @JsonKey(name: 'food_name') required final String foodName,
+          @JsonKey(name: 'food_type') final String? foodType,
+          @JsonKey(name: 'food_url') final String? foodUrl,
+          @JsonKey(name: 'food_images') final FoodImagesWrapper? foodImages}) =
+      _$FatSecretFoodImpl;
+  const _FatSecretFood._() : super._();
 
   factory _FatSecretFood.fromJson(Map<String, dynamic> json) =
       _$FatSecretFoodImpl.fromJson;
@@ -956,8 +997,154 @@ abstract class _FatSecretFood implements FatSecretFood {
   @JsonKey(name: 'food_url')
   String? get foodUrl;
   @override
+  @JsonKey(name: 'food_images')
+  FoodImagesWrapper? get foodImages;
+  @override
   @JsonKey(ignore: true)
   _$$FatSecretFoodImplCopyWith<_$FatSecretFoodImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+FoodImagesWrapper _$FoodImagesWrapperFromJson(Map<String, dynamic> json) {
+  return _FoodImagesWrapper.fromJson(json);
+}
+
+/// @nodoc
+mixin _$FoodImagesWrapper {
+  @JsonKey(name: 'food_image')
+  dynamic get foodImage => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $FoodImagesWrapperCopyWith<FoodImagesWrapper> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $FoodImagesWrapperCopyWith<$Res> {
+  factory $FoodImagesWrapperCopyWith(
+          FoodImagesWrapper value, $Res Function(FoodImagesWrapper) then) =
+      _$FoodImagesWrapperCopyWithImpl<$Res, FoodImagesWrapper>;
+  @useResult
+  $Res call({@JsonKey(name: 'food_image') dynamic foodImage});
+}
+
+/// @nodoc
+class _$FoodImagesWrapperCopyWithImpl<$Res, $Val extends FoodImagesWrapper>
+    implements $FoodImagesWrapperCopyWith<$Res> {
+  _$FoodImagesWrapperCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? foodImage = freezed,
+  }) {
+    return _then(_value.copyWith(
+      foodImage: freezed == foodImage
+          ? _value.foodImage
+          : foodImage // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$FoodImagesWrapperImplCopyWith<$Res>
+    implements $FoodImagesWrapperCopyWith<$Res> {
+  factory _$$FoodImagesWrapperImplCopyWith(_$FoodImagesWrapperImpl value,
+          $Res Function(_$FoodImagesWrapperImpl) then) =
+      __$$FoodImagesWrapperImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({@JsonKey(name: 'food_image') dynamic foodImage});
+}
+
+/// @nodoc
+class __$$FoodImagesWrapperImplCopyWithImpl<$Res>
+    extends _$FoodImagesWrapperCopyWithImpl<$Res, _$FoodImagesWrapperImpl>
+    implements _$$FoodImagesWrapperImplCopyWith<$Res> {
+  __$$FoodImagesWrapperImplCopyWithImpl(_$FoodImagesWrapperImpl _value,
+      $Res Function(_$FoodImagesWrapperImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? foodImage = freezed,
+  }) {
+    return _then(_$FoodImagesWrapperImpl(
+      foodImage: freezed == foodImage
+          ? _value.foodImage
+          : foodImage // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$FoodImagesWrapperImpl implements _FoodImagesWrapper {
+  const _$FoodImagesWrapperImpl({@JsonKey(name: 'food_image') this.foodImage});
+
+  factory _$FoodImagesWrapperImpl.fromJson(Map<String, dynamic> json) =>
+      _$$FoodImagesWrapperImplFromJson(json);
+
+  @override
+  @JsonKey(name: 'food_image')
+  final dynamic foodImage;
+
+  @override
+  String toString() {
+    return 'FoodImagesWrapper(foodImage: $foodImage)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FoodImagesWrapperImpl &&
+            const DeepCollectionEquality().equals(other.foodImage, foodImage));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(foodImage));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FoodImagesWrapperImplCopyWith<_$FoodImagesWrapperImpl> get copyWith =>
+      __$$FoodImagesWrapperImplCopyWithImpl<_$FoodImagesWrapperImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$FoodImagesWrapperImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _FoodImagesWrapper implements FoodImagesWrapper {
+  const factory _FoodImagesWrapper(
+          {@JsonKey(name: 'food_image') final dynamic foodImage}) =
+      _$FoodImagesWrapperImpl;
+
+  factory _FoodImagesWrapper.fromJson(Map<String, dynamic> json) =
+      _$FoodImagesWrapperImpl.fromJson;
+
+  @override
+  @JsonKey(name: 'food_image')
+  dynamic get foodImage;
+  @override
+  @JsonKey(ignore: true)
+  _$$FoodImagesWrapperImplCopyWith<_$FoodImagesWrapperImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 

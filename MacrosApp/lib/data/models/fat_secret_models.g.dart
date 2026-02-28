@@ -72,6 +72,10 @@ _$FatSecretFoodImpl _$$FatSecretFoodImplFromJson(Map<String, dynamic> json) =>
       foodName: json['food_name'] as String,
       foodType: json['food_type'] as String?,
       foodUrl: json['food_url'] as String?,
+      foodImages: json['food_images'] == null
+          ? null
+          : FoodImagesWrapper.fromJson(
+              json['food_images'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$FatSecretFoodImplToJson(_$FatSecretFoodImpl instance) =>
@@ -80,6 +84,19 @@ Map<String, dynamic> _$$FatSecretFoodImplToJson(_$FatSecretFoodImpl instance) =>
       'food_name': instance.foodName,
       'food_type': instance.foodType,
       'food_url': instance.foodUrl,
+      'food_images': instance.foodImages,
+    };
+
+_$FoodImagesWrapperImpl _$$FoodImagesWrapperImplFromJson(
+        Map<String, dynamic> json) =>
+    _$FoodImagesWrapperImpl(
+      foodImage: json['food_image'],
+    );
+
+Map<String, dynamic> _$$FoodImagesWrapperImplToJson(
+        _$FoodImagesWrapperImpl instance) =>
+    <String, dynamic>{
+      'food_image': instance.foodImage,
     };
 
 _$FatSecretImageImpl _$$FatSecretImageImplFromJson(Map<String, dynamic> json) =>
