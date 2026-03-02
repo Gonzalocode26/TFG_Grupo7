@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tfg_grupo7/presentation/screens/diary/widgets/daily_progress_card.dart';
 import '../../providers/diary_provider.dart';
 import '../../../data/models/meal_type.dart';
 import 'widgets/meal_card.dart';
+import '../search/search_screen.dart';
 
 class DiaryScreen extends ConsumerWidget {
   const DiaryScreen({super.key});
@@ -33,24 +35,28 @@ class DiaryScreen extends ConsumerWidget {
               return indexA.compareTo(indexB);
             });
 
-          return ListView.builder(
+          return ListView(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            itemCount: sortedMeals.length,
-            itemBuilder: (context, index) {
-              final meal = sortedMeals[index];
+            children: [
+              const DailyProgressCard(),
 
-              return MealCard(
-                meal: meal,
-                onAddTapped: () {
-                  // TODO: Abrir SearchScreen
-                  print('Add food to ${meal.type.displayName}');
-                },
-                onDelete: (food) {
-                  // Eliminar alimento
-                  ref.read(diaryNotifierProvider.notifier).deleteFood(food, meal);
-                },
-              );
-            },
+              ...sortedMeals.map((meal) {
+                return MealCard(
+                  meal: meal,
+                  onAddTapped: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context){
+                          return SearchScreen(mealType: meal.type);
+                        })
+                    );
+                  },
+                  onDelete: (food) {
+                    // Eliminar alimento
+                    ref.read(diaryNotifierProvider.notifier).deleteFood(food, meal);
+                  },
+                );
+              }),
+            ],
           );
         },
         loading: () => const Center(

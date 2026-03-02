@@ -122,3 +122,74 @@ class FatSecretImage with _$FatSecretImage {
   factory FatSecretImage.fromJson(Map<String, dynamic> json) =>
       _$FatSecretImageFromJson(json);
 }
+
+@freezed
+class FatSecretFoodDetails with _$FatSecretFoodDetails {
+  const FatSecretFoodDetails._();
+
+  const factory FatSecretFoodDetails({
+    @JsonKey(name: 'food_id') required String foodId,
+    @JsonKey(name: 'food_name') required String foodName,
+    @JsonKey(name: 'food_type') String? foodType,
+    @JsonKey(name: 'servings') required ServingsWrapper servings,
+    @JsonKey(name: 'food_images') FoodImagesWrapper? foodImages,
+  }) = _FatSecretFoodDetails;
+
+  factory FatSecretFoodDetails.fromJson(Map<String, dynamic> json) =>
+      _$FatSecretFoodDetailsFromJson(json);
+
+// Getter para obtener la URL de la imagen principal
+  String? get mainImageUrl {
+    if (foodImages?.foodImage == null) return null;
+
+    final images = foodImages!.foodImage;
+
+    // Caso 1: La API devuelve una lista de imágenes (List de Maps)
+    if (images is List && images.isNotEmpty) {
+      final firstImage = images[0];
+      if (firstImage is Map<String, dynamic>) {
+        return firstImage['image_url'] as String?;
+      }
+    }
+
+    // Caso 2: La API devuelve una imagen única (Un Map)
+    if (images is Map<String, dynamic>) {
+      return images['image_url'] as String?;
+    }
+
+    return null;
+  }
+}
+
+@freezed
+class ServingsWrapper with _$ServingsWrapper {
+  const factory ServingsWrapper({
+    required List<FatSecretServing> serving,
+  }) = _ServingsWrapper;
+
+  factory ServingsWrapper.fromJson(Map<String, dynamic> json) =>
+      _$ServingsWrapperFromJson(json);
+}
+
+@freezed
+class FatSecretServing with _$FatSecretServing {
+  const FatSecretServing._();
+
+  const factory FatSecretServing({
+    @JsonKey(name: 'serving_id') required String servingId,
+    @JsonKey(name: 'serving_description') required String servingDescription,
+    @JsonKey(name: 'calories') required String calories,
+    @JsonKey(name: 'protein') required String protein,
+    @JsonKey(name: 'carbohydrate') required String carbohydrate,
+    @JsonKey(name: 'fat') required String fat,
+  }) = _FatSecretServing;
+
+  factory FatSecretServing.fromJson(Map<String, dynamic> json) =>
+      _$FatSecretServingFromJson(json);
+
+  // Getters para convertir String a double
+  double get caloriesValue => double.tryParse(calories) ?? 0;
+  double get proteinValue => double.tryParse(protein) ?? 0;
+  double get carbsValue => double.tryParse(carbohydrate) ?? 0;
+  double get fatValue => double.tryParse(fat) ?? 0;
+}

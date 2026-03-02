@@ -48,7 +48,7 @@ class FatSecretFoodService {
     }
   }
 
-  Future<FatSecretFood?> getFood(String foodId) async {
+  Future<FatSecretFoodDetails?> getFood(String foodId) async {
     try {
       final response = await _dio.get(
         '/food/v4',
@@ -64,8 +64,9 @@ class FatSecretFoodService {
       }
 
       final foodData = response.data['food'];
-      return FatSecretFood.fromJson(foodData);
+      return FatSecretFoodDetails.fromJson(foodData);
     } catch (e) {
+      print('❌ ERROR obteniendo detalles: $e');
       return null;
     }
   }

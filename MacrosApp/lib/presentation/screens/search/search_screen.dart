@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/search_provider.dart';
 import '../../../data/models/meal_type.dart';
 import 'widgets/food_result_row.dart';
+import 'widgets/food_details_sheet.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   final MealType mealType;
@@ -179,8 +180,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
         return GestureDetector(
           onTap: () {
-            // TODO: Abrir FoodDetailsSheet
-            print('Selected: ${food.foodName}');
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true, // Importante para que ocupe casi toda la pantalla
+              backgroundColor: Colors.transparent, // Deja que el Container del sheet ponga el color
+              builder: (context) => FoodDetailsSheet(
+                foodId: food.foodId,
+                mealType: widget.mealType, // Se lo pasamos desde el SearchScreen
+              ),
+            );
           },
           child: FoodResultRow(food: food),
         );

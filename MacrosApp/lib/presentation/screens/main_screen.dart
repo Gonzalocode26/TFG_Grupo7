@@ -15,7 +15,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   int _currentIndex = 0;
 
   // Las 3 pantallas principales
-  final _screens = const [
+  final List<Widget> _screens = const [
     DiaryScreen(),
     StatsScreen(),
     ProfileScreen(),

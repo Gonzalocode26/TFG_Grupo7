@@ -111,3 +111,63 @@ Map<String, dynamic> _$$FatSecretImageImplToJson(
       'image_url': instance.imageUrl,
       'image_type': instance.imageType,
     };
+
+_$FatSecretFoodDetailsImpl _$$FatSecretFoodDetailsImplFromJson(
+        Map<String, dynamic> json) =>
+    _$FatSecretFoodDetailsImpl(
+      foodId: json['food_id'] as String,
+      foodName: json['food_name'] as String,
+      foodType: json['food_type'] as String?,
+      servings:
+          ServingsWrapper.fromJson(json['servings'] as Map<String, dynamic>),
+      foodImages: json['food_images'] == null
+          ? null
+          : FoodImagesWrapper.fromJson(
+              json['food_images'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$FatSecretFoodDetailsImplToJson(
+        _$FatSecretFoodDetailsImpl instance) =>
+    <String, dynamic>{
+      'food_id': instance.foodId,
+      'food_name': instance.foodName,
+      'food_type': instance.foodType,
+      'servings': instance.servings,
+      'food_images': instance.foodImages,
+    };
+
+_$ServingsWrapperImpl _$$ServingsWrapperImplFromJson(
+        Map<String, dynamic> json) =>
+    _$ServingsWrapperImpl(
+      serving: (json['serving'] as List<dynamic>)
+          .map((e) => FatSecretServing.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$$ServingsWrapperImplToJson(
+        _$ServingsWrapperImpl instance) =>
+    <String, dynamic>{
+      'serving': instance.serving,
+    };
+
+_$FatSecretServingImpl _$$FatSecretServingImplFromJson(
+        Map<String, dynamic> json) =>
+    _$FatSecretServingImpl(
+      servingId: json['serving_id'] as String,
+      servingDescription: json['serving_description'] as String,
+      calories: json['calories'] as String,
+      protein: json['protein'] as String,
+      carbohydrate: json['carbohydrate'] as String,
+      fat: json['fat'] as String,
+    );
+
+Map<String, dynamic> _$$FatSecretServingImplToJson(
+        _$FatSecretServingImpl instance) =>
+    <String, dynamic>{
+      'serving_id': instance.servingId,
+      'serving_description': instance.servingDescription,
+      'calories': instance.calories,
+      'protein': instance.protein,
+      'carbohydrate': instance.carbohydrate,
+      'fat': instance.fat,
+    };
