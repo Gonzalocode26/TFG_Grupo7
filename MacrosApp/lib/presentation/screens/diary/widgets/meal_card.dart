@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart';
 import '../../../../data/local/database/entities/meal.dart';
 import '../../../../data/local/database/entities/food_item.dart';
 
@@ -17,6 +18,8 @@ class MealCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!; // ← Cargamos diccionario
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -30,7 +33,7 @@ class MealCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-              meal.type.displayName,
+              meal.type.getDisplayName(context),
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -40,11 +43,11 @@ class MealCard extends StatelessWidget {
 
           // Lista de alimentos
           if (meal.foods.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
-                'No foods added yet',
-                style: TextStyle(
+                l10n.noFoodsAddedYet, // ← Traducción aplicada
+                style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 14,
                 ),
@@ -61,7 +64,7 @@ class MealCard extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: onAddTapped,
                 icon: const Icon(Icons.add),
-                label: const Text('Add Food'),
+                label: Text(l10n.addFood), // ← Traducción aplicada
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF9C27B0),
                   foregroundColor: Colors.white,

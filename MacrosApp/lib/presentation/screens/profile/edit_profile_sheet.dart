@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart'; // ← Import de traducciones
 import '../../providers/profile_provider.dart';
 import '../../../data/models/profile_models.dart';
 
@@ -23,7 +24,6 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
   @override
   void initState() {
     super.initState();
-    // Cargamos los datos actuales para pre-llenar el formulario
     final profile = ref.read(profileNotifierProvider).value!;
 
     _nameController = TextEditingController(text: profile.name);
@@ -47,6 +47,8 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!; // ← Cargamos diccionario
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.9,
       decoration: const BoxDecoration(
@@ -55,7 +57,6 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
       ),
       child: Column(
         children: [
-          // Barra superior con botón Close
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: const BoxDecoration(
@@ -67,9 +68,9 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Close", style: TextStyle(fontSize: 16, color: Colors.purple)),
+                  child: Text(l10n.close, style: const TextStyle(fontSize: 16, color: Colors.purple)), // ← Traducción
                 ),
-                const Text("Edit Profile", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(l10n.editProfile, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), // ← Traducción
                 const SizedBox(width: 60),
               ],
             ),
@@ -84,26 +85,25 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
                   child: Column(
                     children: [
-                      _inputRow("Name", _nameController, "", TextInputType.name),
+                      _inputRow(l10n.name, _nameController, "", TextInputType.name), // ← Traducción
                       const Divider(height: 30),
-                      _inputRow("Age", _ageController, "", TextInputType.number),
+                      _inputRow(l10n.age, _ageController, "", TextInputType.number), // ← Traducción
                       const Divider(height: 30),
-                      _inputRow("Weight", _weightController, "kg", const TextInputType.numberWithOptions(decimal: true)),
+                      _inputRow(l10n.weight, _weightController, "kg", const TextInputType.numberWithOptions(decimal: true)), // ← Traducción
                       const Divider(height: 30),
-                      _inputRow("Height", _heightController, "cm", const TextInputType.numberWithOptions(decimal: true)),
+                      _inputRow(l10n.height, _heightController, "cm", const TextInputType.numberWithOptions(decimal: true)), // ← Traducción
                     ],
                   ),
                 ),
                 const SizedBox(height: 24),
 
-                // Bloque 2: Género
-                const Text("Gender", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(l10n.gender, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)), // ← Traducción
                 const SizedBox(height: 12),
                 Row(
                   children: Gender.values.map((g) => Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: _ChipButton(
-                      title: g.name.toUpperCase(), // Puedes usar g.displayName si lo añadiste al enum
+                      title: g.getDisplayName(context), // ← Usamos el método traducido
                       isSelected: _gender == g,
                       onTap: () => setState(() => _gender = g),
                     ),
@@ -111,8 +111,7 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
                 ),
                 const SizedBox(height: 24),
 
-                // Bloque 3: Nivel de Actividad
-                const Text("Activity Level", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(l10n.activityLevel, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)), // ← Traducción
                 const SizedBox(height: 12),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -120,7 +119,7 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
                     children: UserActivity.values.map((a) => Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: _ChipButton(
-                        title: a.name.replaceAll('Active', ' Active').toUpperCase(), // Formateo rápido
+                        title: a.getDisplayName(context), // ← Usamos el método traducido
                         isSelected: _activity == a,
                         onTap: () => setState(() => _activity = a),
                       ),
@@ -129,8 +128,7 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
                 ),
                 const SizedBox(height: 24),
 
-                // Bloque 4: Meta
-                const Text("Goal", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(l10n.goal, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)), // ← Traducción
                 const SizedBox(height: 12),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -138,7 +136,7 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
                     children: GoalType.values.map((g) => Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: _ChipButton(
-                        title: g.name.replaceAll('Loss', ' Loss').replaceAll('Gain', ' Gain').toUpperCase(),
+                        title: g.getDisplayName(context), // ← Usamos el método traducido
                         isSelected: _goal == g,
                         onTap: () => setState(() => _goal = g),
                       ),
@@ -147,7 +145,6 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
                 ),
                 const SizedBox(height: 32),
 
-                // Botón Save
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -157,7 +154,7 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: _saveChanges,
-                    child: const Text("Save", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                    child: Text(l10n.save, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)), // ← Traducción
                   ),
                 ),
                 const SizedBox(height: 40),
@@ -205,7 +202,6 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
   void _saveChanges() {
     final currentProfile = ref.read(profileNotifierProvider).value!;
 
-    // 1. Actualizamos el estado con los nuevos valores del form
     final updatedProfile = currentProfile.copyWith(
       name: _nameController.text,
       age: int.tryParse(_ageController.text) ?? 25,
@@ -216,19 +212,14 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
       selectedGoal: _goal,
     );
 
-    // 2. Enviamos al provider
     ref.read(profileNotifierProvider.notifier).updateField(updatedProfile);
-
-    // 3. Ejecutamos tus métodos de recálculo y guardado
     ref.read(profileNotifierProvider.notifier).recalculateMacros();
     ref.read(profileNotifierProvider.notifier).save();
 
-    // 4. Cerramos el sheet
     Navigator.pop(context);
   }
 }
 
-// Recreación de tu ChipButton de SwiftUI
 class _ChipButton extends StatelessWidget {
   final String title;
   final bool isSelected;

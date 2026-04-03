@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart';
+import 'dart:ui' as ui;
 import '../../../../data/models/fat_secret_models.dart';
 import '../../../../data/models/meal_type.dart';
 import '../../../../data/models/food_details.dart';
 import '../../../../data/remote/services/fat_secret_food_service.dart';
+import '../../../../data/remote/services/translation_service.dart';
 import '../../../providers/diary_provider.dart';
 
 class FoodDetailsSheet extends ConsumerStatefulWidget {
@@ -26,15 +29,53 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
   int _selectedServingIndex = 0;
   double _quantity = 1.0;
 
-  // Controlador para el TextField de gramos/ml
   final TextEditingController _quantityController = TextEditingController(text: '1.0');
 
+  // Servicios
   final _service = FatSecretFoodService();
+  final _translationService = TranslationService(); // ← Instanciamos DeepL
 
   @override
   void initState() {
     super.initState();
-    _futureDetails = _service.getFood(widget.foodId);
+    // Interceptamos la llamada para traducir antes de pintar
+    _futureDetails = _loadAndTranslateFood(widget.foodId);
+  }
+
+  // 👇 NUEVA FUNCIÓN MÁGICA DE TRADUCCIÓN 👇
+  Future<FatSecretFoodDetails?> _loadAndTranslateFood(String id) async {
+    // 1. Obtenemos el alimento original en inglés
+    final details = await _service.getFood(id);
+    if (details == null) return null;
+
+    // 2. Detectamos el idioma del móvil
+    final languageCode = ui.PlatformDispatcher.instance.locale.languageCode;
+
+    // Si es inglés, no gastamos peticiones a la API
+    if (languageCode == 'en') return details;
+
+    // 3. Traducimos el nombre principal
+    final translatedName = await _translationService.translate(
+      details.foodName,
+      languageCode,
+    );
+
+    // 4. Traducimos todas las porciones en paralelo
+    final translatedServings = await Future.wait(
+      details.servings.serving.map((serving) async {
+        final translatedDesc = await _translationService.translate(
+          serving.servingDescription,
+          languageCode,
+        );
+        return serving.copyWith(servingDescription: translatedDesc);
+      }),
+    );
+
+    // 5. Devolvemos una copia exacta del alimento pero con los textos en español
+    return details.copyWith(
+      foodName: translatedName,
+      servings: details.servings.copyWith(serving: translatedServings),
+    );
   }
 
   @override
@@ -43,7 +84,6 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
     super.dispose();
   }
 
-  // Comprueba si la porción se mide en peso/volumen para mostrar el TextField
   bool _isMetricServing(String description) {
     final lowerDesc = description.toLowerCase();
     return lowerDesc.contains('g') ||
@@ -54,7 +94,6 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
   void _updateQuantity(double newQuantity) {
     setState(() {
       _quantity = newQuantity;
-      // Mantenemos sincronizado el TextField por si cambiamos de serving size
       if (_quantityController.text != newQuantity.toStringAsFixed(1) &&
           _quantityController.text != newQuantity.toInt().toString()) {
         _quantityController.text = newQuantity.toInt() == newQuantity
@@ -66,6 +105,8 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -84,14 +125,14 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
                 }
 
                 if (snapshot.hasError || snapshot.data == null) {
-                  return const Center(child: Text('Error loading details 😢'));
+                  return Center(child: Text(l10n.errorLoading));
                 }
 
                 final details = snapshot.data!;
                 final servings = details.servings.serving;
                 final currentServing = servings[_selectedServingIndex];
 
-                return _buildContent(details, servings, currentServing);
+                return _buildContent(details, servings, currentServing, l10n);
               },
             ),
           ),
@@ -100,7 +141,7 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
     );
   }
 
-  Widget _buildContent(FatSecretFoodDetails details, List<FatSecretServing> servings, FatSecretServing currentServing) {
+  Widget _buildContent(FatSecretFoodDetails details, List<FatSecretServing> servings, FatSecretServing currentServing, AppLocalizations l10n) {
     final totalCals = currentServing.caloriesValue * _quantity;
     final totalProtein = currentServing.proteinValue * _quantity;
     final totalCarbs = currentServing.carbsValue * _quantity;
@@ -110,7 +151,6 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Imagen de Cabecera
           _buildHeaderImage(details),
 
           Padding(
@@ -118,7 +158,6 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 2. Título y Badge
                 Text(
                   details.foodName,
                   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -126,7 +165,11 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
                 if (details.foodType != null) ...[
                   const SizedBox(height: 8),
                   Chip(
-                    label: Text(details.foodType!),
+                    label: Text(
+                        details.foodType!.toLowerCase() == 'generic'
+                            ? l10n.generic
+                            : details.foodType!
+                    ),
                     backgroundColor: Colors.grey.shade200,
                     side: BorderSide.none,
                   ),
@@ -134,8 +177,7 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
 
                 const SizedBox(height: 32),
 
-                // 3. Selector de Porción
-                const Text('Serving Size', style: TextStyle(fontWeight: FontWeight.w600)),
+                Text(l10n.servingSize, style: const TextStyle(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -157,7 +199,6 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
                         if (newIndex != null) {
                           setState(() {
                             _selectedServingIndex = newIndex;
-                            // Resetear cantidad a 1 al cambiar de porción (opcional, pero buena UX)
                             _updateQuantity(1.0);
                           });
                         }
@@ -168,14 +209,12 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
 
                 const SizedBox(height: 24),
 
-                // 4. Selector de Cantidad Dinámico
-                const Text('Quantity', style: TextStyle(fontWeight: FontWeight.w600)),
+                Text(l10n.quantity, style: const TextStyle(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
                 _buildQuantitySelector(currentServing.servingDescription),
 
                 const SizedBox(height: 32),
 
-                // 5. Resumen de Macros
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -186,17 +225,16 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _macroItem('Calories', '${totalCals.toInt()} kcal', Colors.purple),
-                      _macroItem('Protein', '${totalProtein.toInt()}g', Colors.red),
-                      _macroItem('Carbs', '${totalCarbs.toInt()}g', Colors.blue),
-                      _macroItem('Fat', '${totalFat.toInt()}g', Colors.orange),
+                      _macroItem(l10n.calories, '${totalCals.toInt()} kcal', Colors.purple),
+                      _macroItem(l10n.protein, '${totalProtein.toInt()}g', Colors.red),
+                      _macroItem(l10n.carbs, '${totalCarbs.toInt()}g', Colors.blue),
+                      _macroItem(l10n.fat, '${totalFat.toInt()}g', Colors.orange),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 24),
 
-                // 6. Botón Guardar
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -207,10 +245,13 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: () => _saveFood(details, currentServing, totalCals, totalProtein, totalCarbs, totalFat),
-                    child: Text('ADD TO ${widget.mealType.displayName.toUpperCase()}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: Text(
+                        l10n.addToMeal(widget.mealType.getDisplayName(context).toUpperCase()),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+                    ),
                   ),
                 ),
-                const SizedBox(height: 32), // Margen inferior extra
+                const SizedBox(height: 32),
               ],
             ),
           ),
@@ -219,7 +260,6 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
     );
   }
 
-  // NUEVO: Widget de Imagen
   Widget _buildHeaderImage(FatSecretFoodDetails details) {
     final imageUrl = details.mainImageUrl;
 
@@ -262,10 +302,8 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
     );
   }
 
-  // NUEVO: Selector dinámico
   Widget _buildQuantitySelector(String servingDescription) {
     if (_isMetricServing(servingDescription)) {
-      // Mostrar TextField numérico
       return Row(
         children: [
           Expanded(
@@ -290,7 +328,6 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
             ),
           ),
           const SizedBox(width: 16),
-          // Mostramos la unidad al lado del input
           Text(
             servingDescription.replaceAll(RegExp(r'[0-9\.]'), '').trim(),
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -298,7 +335,6 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
         ],
       );
     } else {
-      // Mostrar Stepper clásico
       return Row(
         children: [
           IconButton(

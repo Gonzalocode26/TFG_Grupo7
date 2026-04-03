@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/screens/main_screen.dart';  // ← Nuevo import
 
@@ -10,7 +12,17 @@ class MacrosDiaryApp extends StatelessWidget {
     return MaterialApp(
       title: 'Macros Diary',
       theme: AppTheme.light,
-      home: const MainScreen(),  // ← Cambiar aquí
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('es'),
+      ],
+      home: const MainScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

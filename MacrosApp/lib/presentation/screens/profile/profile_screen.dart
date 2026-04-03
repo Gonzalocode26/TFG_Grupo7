@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart';
 import '../../providers/profile_provider.dart';
 import 'edit_profile_sheet.dart';
 
@@ -8,13 +9,13 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Escuchamos el estado del perfil
     final profileState = ref.watch(profileNotifierProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F7), // iOS systemGray6
+      backgroundColor: const Color(0xFFF2F2F7),
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(l10n.profile),
         backgroundColor: const Color(0xFFF2F2F7),
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -23,7 +24,6 @@ class ProfileScreen extends ConsumerWidget {
         data: (profile) => ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            // 1. Tarjeta de Cabecera (Botón para editar)
             GestureDetector(
               onTap: () => _showEditSheet(context),
               child: Container(
@@ -46,7 +46,7 @@ class ProfileScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            "Edit your physical data",
+                            l10n.editPhysicalData,
                             style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                           ),
                         ],
@@ -59,7 +59,6 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 20),
 
-            // 2. Tarjeta de Energía (Calorías)
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -69,9 +68,9 @@ class ProfileScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Energy Target",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  Text(
+                    l10n.energyTarget,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -79,7 +78,7 @@ class ProfileScreen extends ConsumerWidget {
                       const Icon(Icons.local_fire_department, color: Colors.orange),
                       const SizedBox(width: 8),
                       Text(
-                        "Daily Calories",
+                        l10n.dailyCalories,
                         style: TextStyle(fontSize: 16, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
                       ),
                       const Spacer(),
@@ -99,7 +98,6 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 20),
 
-            // 3. Tarjeta de Macros
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -109,16 +107,16 @@ class ProfileScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Macro Targets",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  Text(
+                    l10n.macroTargets,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 16),
-                  _macroRow("Protein", Colors.red, Icons.set_meal, profile.proteinGoal),
+                  _macroRow(l10n.protein, Colors.red, Icons.set_meal, profile.proteinGoal), // ← Traducción aplicada
                   const Divider(height: 24),
-                  _macroRow("Carbs", Colors.blue, Icons.grass, profile.carbsGoal),
+                  _macroRow(l10n.carbs, Colors.blue, Icons.grass, profile.carbsGoal), // ← Traducción aplicada
                   const Divider(height: 24),
-                  _macroRow("Fat", Colors.yellow.shade700, Icons.water_drop, profile.fatGoal),
+                  _macroRow(l10n.fat, Colors.yellow.shade700, Icons.water_drop, profile.fatGoal), // ← Traducción aplicada
                 ],
               ),
             ),

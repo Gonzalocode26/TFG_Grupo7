@@ -1,19 +1,24 @@
+import 'package:flutter/material.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart';
+
 enum MealType {
   breakfast,
   lunch,
   snack,
   dinner;
 
-  String get displayName {
+  String getDisplayName(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     switch (this) {
       case MealType.breakfast:
-        return 'Breakfast';
+        return l10n.breakfast;
       case MealType.lunch:
-        return 'Lunch';
+        return l10n.lunch;
       case MealType.snack:
-        return 'Snack';
+        return l10n.snack;
       case MealType.dinner:
-        return 'Dinner';
+        return l10n.dinner;
     }
   }
 }

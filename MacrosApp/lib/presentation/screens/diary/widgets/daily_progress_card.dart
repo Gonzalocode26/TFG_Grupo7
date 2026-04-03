@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart';
 import '../../../providers/diary_provider.dart';
 import '../../../providers/profile_provider.dart';
 import '../../../../data/local/database/entities/diary_day.dart';
@@ -9,7 +10,7 @@ class DailyProgressCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Escuchamos ambos providers
+    final l10n = AppLocalizations.of(context)!;
     final diaryState = ref.watch(diaryNotifierProvider);
     final profileAsync = ref.watch(profileNotifierProvider);
 
@@ -35,9 +36,9 @@ class DailyProgressCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Header
-              const Text(
-                "Today's Progress",
-                style: TextStyle(
+              Text(
+                l10n.todaysProgress, // ← Traducción aplicada
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -48,6 +49,7 @@ class DailyProgressCard extends ConsumerWidget {
               _buildMainCalories(
                 consumed: totals.calories,
                 goal: profile.calorieGoal,
+                l10n: l10n, // ← Pasamos el diccionario al helper
               ),
               const SizedBox(height: 24),
 
@@ -56,7 +58,7 @@ class DailyProgressCard extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: _buildMacroColumn(
-                      label: 'Protein',
+                      label: l10n.protein, // ← Traducción aplicada
                       consumed: totals.protein,
                       goal: profile.proteinGoal,
                       color: Colors.red,
@@ -64,7 +66,7 @@ class DailyProgressCard extends ConsumerWidget {
                   ),
                   Expanded(
                     child: _buildMacroColumn(
-                      label: 'Carbs',
+                      label: l10n.carbs, // ← Traducción aplicada
                       consumed: totals.carbs,
                       goal: profile.carbsGoal,
                       color: Colors.blue,
@@ -72,7 +74,7 @@ class DailyProgressCard extends ConsumerWidget {
                   ),
                   Expanded(
                     child: _buildMacroColumn(
-                      label: 'Fat',
+                      label: l10n.fat, // ← Traducción aplicada
                       consumed: totals.fat,
                       goal: profile.fatGoal,
                       color: Colors.orange,
@@ -89,7 +91,11 @@ class DailyProgressCard extends ConsumerWidget {
     );
   }
 
-  Widget _buildMainCalories({required double consumed, required double goal}) {
+  Widget _buildMainCalories({
+    required double consumed,
+    required double goal,
+    required AppLocalizations l10n, // ← Nuevo parámetro
+  }) {
     final percentage = goal > 0 ? (consumed / goal).clamp(0.0, 1.0) : 0.0;
     final remaining = (goal - consumed).clamp(0, double.infinity);
 
@@ -122,7 +128,7 @@ class DailyProgressCard extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
-                '${remaining.toInt()} left',
+                '${remaining.toInt()} ${l10n.left}', // ← Traducción aplicada
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -162,7 +168,7 @@ class DailyProgressCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
+            label, // ← Ya viene traducido desde el build
             style: TextStyle(
               fontSize: 13,
               color: Colors.grey.shade600,
@@ -223,7 +229,6 @@ class DailyProgressCard extends ConsumerWidget {
     );
   }
 
-  // Lógica para extraer calorías consumidas del DiaryProvider
   _DayTotals _calculateDayTotals(AsyncValue<DiaryDay?> diaryState) {
     final day = diaryState.value;
 

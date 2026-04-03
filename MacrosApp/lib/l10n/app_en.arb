@@ -1,0 +1,90 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "MacrosDiary",
+
+  "diary": "Diary",
+  "stats": "Statistics",
+  "profile": "Profile",
+
+  "breakfast": "Breakfast",
+  "lunch": "Lunch",
+  "snack": "Snack",
+  "dinner": "Dinner",
+
+  "addFood": "Add Food",
+  "noFoodsAddedYet": "No foods added yet",
+  "search": "Search",
+  "searchPlaceholder": "Search for food...",
+  "noResults": "No results found",
+  "noResultsFor": "No results found for \"{query}\"",
+  "@noResultsFor": {
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+
+  "todaysProgress": "Today's Progress",
+  "left": "left",
+  "protein": "Protein",
+  "carbs": "Carbs",
+  "fat": "Fat",
+  "calories": "Calories",
+
+  "servingSize": "Serving Size",
+  "quantity": "Quantity",
+  "addToMeal": "ADD TO {meal}",
+  "@addToMeal": {
+    "placeholders": {
+      "meal": { "type": "String" }
+    }
+  },
+  "generic": "Generic",
+
+  "personalInformation": "Personal Information",
+  "name": "Name",
+  "age": "Age",
+  "height": "Height",
+  "weight": "Weight",
+  "gender": "Gender",
+  "male": "MALE",
+  "female": "FEMALE",
+
+  "editPhysicalData": "Edit your physical data",
+  "energyTarget": "Energy Target",
+  "dailyCalories": "Daily Calories",
+  "macroTargets": "Macro Targets",
+
+  "activityLevel": "Activity Level",
+  "sedentary": "SEDENTARY",
+  "lightlyActive": "LIGHTLY ACTIVE",
+  "moderatelyActive": "MODERATELY ACTIVE",
+  "veryActive": "VERY ACTIVE",
+  "extraActive": "EXTRA ACTIVE",
+
+  "goal": "Goal",
+  "weightLoss": "WEIGHT LOSS",
+  "maintenance": "MAINTENANCE",
+  "muscleGain": "MUSCLE GAIN",
+
+  "dailyNutritionGoals": "Daily Nutrition Goals",
+  "autoCalculateMacros": "Auto-calculate macros",
+  "basedOnStats": "Based on your stats and goals",
+
+  "editProfile": "Edit Profile",
+  "save": "Save",
+  "close": "Close",
+  "profileUpdated": "Profile updated successfully",
+
+  "history": "History",
+  "noDataPeriod": "No data for this period",
+  "today": "Today",
+  "clearFilter": "Clear Filter",
+
+  "delete": "Delete",
+  "cancel": "Cancel",
+
+  "errorLoading": "Error loading data",
+  "errorNetwork": "Network error. Please check your connection.",
+  "retry": "Retry"
+}

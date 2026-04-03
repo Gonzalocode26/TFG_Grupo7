@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart';
 import '../../../../data/models/fat_secret_models.dart';
 
 class FoodResultRow extends StatelessWidget {
@@ -12,6 +13,8 @@ class FoodResultRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       padding: const EdgeInsets.all(12),
@@ -21,11 +24,8 @@ class FoodResultRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Imagen o icono
           _buildImage(),
           const SizedBox(width: 12),
-
-          // Info del alimento
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +51,9 @@ class FoodResultRow extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      food.foodType!.toUpperCase(),
+                      food.foodType!.toLowerCase() == 'generic'
+                          ? l10n.generic.toUpperCase()
+                          : food.foodType!.toUpperCase(),
                       style: TextStyle(
                         color: Colors.blue.shade700,
                         fontSize: 11,
@@ -63,8 +65,6 @@ class FoodResultRow extends StatelessWidget {
               ],
             ),
           ),
-
-          // Icono chevron
           Icon(
             Icons.chevron_right,
             color: Colors.grey.shade400,
@@ -76,7 +76,6 @@ class FoodResultRow extends StatelessWidget {
   }
 
   Widget _buildImage() {
-    // Usar el getter mainImageUrl del modelo
     if (food.mainImageUrl != null) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(10),

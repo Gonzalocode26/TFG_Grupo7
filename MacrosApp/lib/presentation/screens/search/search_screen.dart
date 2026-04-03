@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart';
 import '../../providers/search_provider.dart';
 import '../../../data/models/meal_type.dart';
 import 'widgets/food_result_row.dart';
@@ -24,7 +25,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    // Auto-focus después de un delay
     Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
         _focusNode.requestFocus();
@@ -42,22 +42,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final searchState = ref.watch(searchNotifierProvider);
+    final l10n = AppLocalizations.of(context)!; // ← Cargamos diccionario
 
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
       appBar: AppBar(
-        title: Text(widget.mealType.displayName),
+        title: Text(widget.mealType.getDisplayName(context)),
       ),
       body: Column(
         children: [
-          // Barra de búsqueda
           Padding(
             padding: const EdgeInsets.all(16),
             child: TextField(
               controller: _searchController,
               focusNode: _focusNode,
               decoration: InputDecoration(
-                hintText: 'Search an item',
+                hintText: l10n.searchPlaceholder,
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
@@ -78,7 +78,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
               textInputAction: TextInputAction.search,
               onChanged: (value) {
-                setState(() {}); // Para mostrar/ocultar botón clear
+                setState(() {});
               },
               onSubmitted: (query) {
                 if (query.isNotEmpty) {
@@ -87,17 +87,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               },
             ),
           ),
-
-          // Resultados
           Expanded(
-            child: _buildResults(searchState),
+            child: _buildResults(searchState, l10n),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildResults(SearchState state) {
+  Widget _buildResults(SearchState state, AppLocalizations l10n) {
     if (state.isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -138,7 +136,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'No results found for "${_searchController.text}"',
+                l10n.noResultsFor(_searchController.text),
                 style: TextStyle(
                   color: Colors.grey.shade600,
                   fontSize: 16,
@@ -159,7 +157,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Search for a food item',
+                l10n.searchPlaceholder,
                 style: TextStyle(
                   color: Colors.grey.shade600,
                   fontSize: 16,
@@ -171,7 +169,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       }
     }
 
-    // Lista de resultados
     return ListView.builder(
       padding: const EdgeInsets.only(top: 8, bottom: 16),
       itemCount: state.results.length,
@@ -182,11 +179,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           onTap: () {
             showModalBottomSheet(
               context: context,
-              isScrollControlled: true, // Importante para que ocupe casi toda la pantalla
-              backgroundColor: Colors.transparent, // Deja que el Container del sheet ponga el color
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
               builder: (context) => FoodDetailsSheet(
                 foodId: food.foodId,
-                mealType: widget.mealType, // Se lo pasamos desde el SearchScreen
+                mealType: widget.mealType,
               ),
             );
           },

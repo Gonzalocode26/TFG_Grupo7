@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart'; // ← Import de traducciones
 import '../../providers/stats_provider.dart';
 import '../../../data/models/stat_type.dart';
 import '../../../data/models/daily_chart_data.dart';
@@ -16,10 +17,21 @@ class StatsScreen extends ConsumerStatefulWidget {
 class _StatsScreenState extends ConsumerState<StatsScreen> {
   StatType _selectedStat = StatType.calories;
 
+  // Helper para traducir los tipos de macros de la gráfica
+  String _getStatName(StatType type, AppLocalizations l10n) {
+    switch (type) {
+      case StatType.calories: return l10n.calories;
+      case StatType.protein: return l10n.protein;
+      case StatType.carbs: return l10n.carbs;
+      case StatType.fat: return l10n.fat;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(statsNotifierProvider);
     final notifier = ref.read(statsNotifierProvider.notifier);
+    final l10n = AppLocalizations.of(context)!; // ← Cargamos diccionario
 
     final selectedDate = state.selectedDate ?? DateTime.now();
     final dayData = state.filteredDays.firstOrNull;
@@ -28,16 +40,14 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
       backgroundColor: const Color(0xFFF2F2F7),
       body: CustomScrollView(
         slivers: [
-          // 1. AppBar que se encoge con el scroll
-          const SliverAppBar(
-            title: Text('Statistics'),
+          SliverAppBar(
+            title: Text(l10n.stats), // ← Traducción aplicada
             backgroundColor: Colors.white,
             pinned: true,
             elevation: 0,
             scrolledUnderElevation: 0,
           ),
 
-          // 2. Cabecera, Botones y Gráfica (Todo junto en un Sliver)
           SliverToBoxAdapter(
             child: Container(
               color: Colors.white,
@@ -45,7 +55,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
-                  _buildSegmentedControl(),
+                  _buildSegmentedControl(l10n), // ← Pasamos el diccionario
                   const SizedBox(height: 16),
                   _buildWeekNavigator(state, notifier),
                   const SizedBox(height: 24),
@@ -61,7 +71,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
             ),
           ),
 
-          // 3. Título del Historial
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -69,27 +78,26 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'History - ${DateFormat('MMM d').format(selectedDate)}',
+                    '${l10n.history} - ${DateFormat('MMM d').format(selectedDate)}', // ← Traducción aplicada
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   if (state.selectedDate != null)
                     TextButton(
                       onPressed: () => notifier.selectDate(null),
-                      child: const Text('Clear Filter'),
+                      child: Text(l10n.clearFilter), // ← Traducción aplicada
                     ),
                 ],
               ),
             ),
           ),
 
-          // 4. Lista de Alimentos (SliverList)
           if (dayData == null || dayData.meals.isEmpty)
             SliverToBoxAdapter(
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(32.0),
                   child: Text(
-                    'No food logged on this day.',
+                    l10n.noDataPeriod, // ← Traducción aplicada
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                 ),
@@ -110,7 +118,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8, bottom: 4),
                           child: Text(
-                            meal.type.name.toUpperCase(),
+                            meal.type.getDisplayName(context).toUpperCase(), // ← Usamos traducción de MealType
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -119,7 +127,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                           ),
                         ),
                         ...meal.foods.map((food) => Dismissible(
-                          // La Key usa el ID único del alimento en la BD
                           key: Key(food.id.toString()),
                           direction: DismissDirection.endToStart,
                           background: Container(
@@ -133,7 +140,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                             child: const Icon(Icons.delete, color: Colors.white),
                           ),
                           onDismissed: (direction) {
-                            // Acción al hacer Swipe
                             notifier.deleteFood(food, meal);
                           },
                           child: Card(
@@ -161,14 +167,12 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               ),
             ),
 
-          // Espacio final extra para que no quede pegado abajo
           const SliverToBoxAdapter(child: SizedBox(height: 40)),
         ],
       ),
     );
   }
 
-  // --- MÉTODOS AUXILIARES INTACTOS ---
   Widget _buildWeekNavigator(StatsState state, StatsNotifier notifier) {
     final now = DateTime.now();
     final isCurrentWeek = state.currentWeekStart.year == now.year &&
@@ -192,7 +196,8 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
     );
   }
 
-  Widget _buildSegmentedControl() {
+  // Modificado para usar las traducciones
+  Widget _buildSegmentedControl(AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: SegmentedButton<StatType>(
@@ -200,7 +205,8 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
         segments: StatType.values.map((type) {
           return ButtonSegment<StatType>(
             value: type,
-            label: Text(type.displayName, style: const TextStyle(fontSize: 12), textAlign: TextAlign.center),
+            // 👇 Aquí usamos el helper que inyecta la traducción
+            label: Text(_getStatName(type, l10n), style: const TextStyle(fontSize: 12), textAlign: TextAlign.center),
           );
         }).toList(),
         selected: {_selectedStat},

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tfg_grupo7/l10n/app_localizations.dart';
 import 'diary/diary_screen.dart';
 import 'stats/stats_screen.dart';
 import 'profile/profile_screen.dart';
@@ -14,7 +15,6 @@ class MainScreen extends ConsumerStatefulWidget {
 class _MainScreenState extends ConsumerState<MainScreen> {
   int _currentIndex = 0;
 
-  // Las 3 pantallas principales
   final List<Widget> _screens = const [
     DiaryScreen(),
     StatsScreen(),
@@ -23,6 +23,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 👇 Cargamos el diccionario según el idioma del móvil
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: NavigationBar(
@@ -32,21 +35,22 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             _currentIndex = index;
           });
         },
-        destinations: const [
+        // 👇 Quitamos el const de aquí e inyectamos las traducciones
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.book_outlined),
-            selectedIcon: Icon(Icons.book),
-            label: 'Diary',
+            icon: const Icon(Icons.book_outlined),
+            selectedIcon: const Icon(Icons.book),
+            label: l10n.diary, // ← Antes: 'Diary'
           ),
           NavigationDestination(
-            icon: Icon(Icons.bar_chart_outlined),
-            selectedIcon: Icon(Icons.bar_chart),
-            label: 'Stats',
+            icon: const Icon(Icons.bar_chart_outlined),
+            selectedIcon: const Icon(Icons.bar_chart),
+            label: l10n.stats, // ← Antes: 'Stats'
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Profile',
+            icon: const Icon(Icons.person_outline),
+            selectedIcon: const Icon(Icons.person),
+            label: l10n.profile, // ← Antes: 'Profile'
           ),
         ],
       ),
