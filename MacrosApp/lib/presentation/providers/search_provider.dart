@@ -1,13 +1,12 @@
-// ignore_for_file: avoid_print
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../data/remote/services/fat_secret_food_service.dart';
+import '../../data/remote/services/translation_service.dart';
 import '../../data/models/fat_secret_models.dart';
+import 'dart:ui' as ui;
 
 part 'search_provider.g.dart';
 
-/// Estado de la búsqueda
-/// Equivalente a las @Published properties de SearchViewModel
 class SearchState {
   final List<FatSecretFood> results;
   final bool isLoading;
@@ -21,7 +20,6 @@ class SearchState {
     this.hasSearched = false,
   });
 
-  /// Copia del estado con algunos campos modificados
   SearchState copyWith({
     List<FatSecretFood>? results,
     bool? isLoading,
@@ -37,31 +35,24 @@ class SearchState {
   }
 }
 
-/// Provider que maneja la búsqueda de alimentos
-/// Equivalente a SearchViewModel de Swift
 @riverpod
 class SearchNotifier extends _$SearchNotifier {
-  final _service = FatSecretFoodService();
+  final _foodService = FatSecretFoodService();
+  final _translationService = TranslationService();
 
-  /// Estado inicial: sin búsquedas, sin resultados
   @override
   SearchState build() {
     return SearchState();
   }
 
-  /// Buscar alimentos por query
-  /// Equivalente a fetchFoods(query:) de Swift
   Future<void> searchFoods(String query) async {
-    // Limpiar espacios en blanco
     final cleanQuery = query.trim();
 
-    // Si está vacío, limpiar resultados
     if (cleanQuery.isEmpty) {
       state = SearchState();
       return;
     }
 
-    // Empezar loading
     state = state.copyWith(
       isLoading: true,
       errorMessage: null,
@@ -69,29 +60,44 @@ class SearchNotifier extends _$SearchNotifier {
     );
 
     try {
-      // Llamar a la API
-      final results = await _service.searchFood(cleanQuery);
+      final languageCode = ui.PlatformDispatcher.instance.locale.languageCode;
+      final isEnglish = languageCode == 'en';
 
-      // Actualizar con resultados
+      String queryForApi = cleanQuery;
+
+      if (!isEnglish) {
+        queryForApi = await _translationService.translate(cleanQuery, 'EN');
+      }
+
+      final results = await _foodService.searchFood(queryForApi);
+
+      List<FatSecretFood> finalResults = results;
+
+      if (!isEnglish) {
+        finalResults = await Future.wait(results.map((food) async {
+          final translatedName = await _translationService.translate(
+            food.foodName,
+            languageCode,
+          );
+          return food.copyWith(foodName: translatedName);
+        }));
+      }
+
       state = state.copyWith(
-        results: results,
+        results: finalResults,
         isLoading: false,
       );
-
       print('✅ Búsqueda exitosa: ${results.length} resultados');
     } catch (e) {
-      // Manejar error
       state = state.copyWith(
         results: [],
         isLoading: false,
         errorMessage: 'Error: ${e.toString()}',
       );
-
       print('❌ Error en búsqueda: $e');
     }
   }
 
-  /// Limpiar búsqueda
   void clear() {
     state = SearchState();
   }

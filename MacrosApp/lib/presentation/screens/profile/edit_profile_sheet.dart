@@ -70,7 +70,7 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
                   child: const Text("Close", style: TextStyle(fontSize: 16, color: Colors.purple)),
                 ),
                 const Text("Edit Profile", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(width: 60), // Para centrar el título
+                const SizedBox(width: 60),
               ],
             ),
           ),
@@ -79,7 +79,6 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               children: [
-                // Bloque 1: TextFields (Name, Age, Weight, Height)
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
@@ -187,9 +186,11 @@ class _EditProfileSheetState extends ConsumerState<EditProfileSheet> {
             controller: controller,
             keyboardType: keyboardType,
             textAlign: TextAlign.right,
+            textAlignVertical: TextAlignVertical.center,
             decoration: const InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             ),
           ),
         ),
