@@ -1,0 +1,80 @@
+{
+  "@@locale": "es",
+
+  "appTitle": "MacrosDiary",
+
+  "diary": "Diario",
+  "stats": "Estadísticas",
+  "profile": "Perfil",
+
+  "breakfast": "Desayuno",
+  "lunch": "Almuerzo",
+  "snack": "Merienda",
+  "dinner": "Cena",
+
+  "addFood": "Añadir Alimento",
+  "noFoodsAddedYet": "Aún no hay alimentos",
+  "search": "Buscar",
+  "searchPlaceholder": "Buscar alimentos...",
+  "noResults": "No se encontraron resultados",
+  "noResultsFor": "No se encontraron resultados para \"{query}\"",
+
+  "todaysProgress": "Progreso de Hoy",
+  "left": "restantes",
+  "protein": "Proteína",
+  "carbs": "Carbohidratos",
+  "fat": "Grasa",
+  "calories": "Calorías",
+
+  "servingSize": "Porción",
+  "quantity": "Cantidad",
+  "addToMeal": "AÑADIR AL {meal}",
+  "generic": "Genérico",
+
+  "personalInformation": "Información Personal",
+  "name": "Nombre",
+  "age": "Edad",
+  "height": "Altura",
+  "weight": "Peso",
+  "gender": "Género",
+  "male": "HOMBRE",
+  "female": "MUJER",
+
+  "editPhysicalData": "Edita tus datos físicos",
+  "energyTarget": "Objetivo de Energía",
+  "dailyCalories": "Calorías Diarias",
+  "macroTargets": "Objetivo de Macros",
+
+  "activityLevel": "Nivel de Actividad",
+  "sedentary": "SEDENTARIO",
+  "lightlyActive": "LIGERAMENTE ACTIVO",
+  "moderatelyActive": "MODERADAMENTE ACTIVO",
+  "veryActive": "MUY ACTIVO",
+  "extraActive": "EXTRA ACTIVO",
+
+  "goal": "Objetivo",
+  "weightLoss": "PÉRDIDA DE PESO",
+  "maintenance": "MANTENIMIENTO",
+  "muscleGain": "GANANCIA MUSCULAR",
+
+  "dailyNutritionGoals": "Objetivos Nutricionales Diarios",
+  "autoCalculateMacros": "Calcular macros automáticamente",
+  "basedOnStats": "Basado en tus estadísticas",
+
+  "editProfile": "Editar Perfil",
+  "save": "Guardar",
+  "close": "Cerrar",
+  "profileUpdated": "Perfil actualizado",
+
+  "history": "Historial",
+  "noDataPeriod": "No hay datos para este período",
+  "today": "Hoy",
+  "clearFilter": "Limpiar Filtro",
+
+  "delete": "Eliminar",
+  "cancel": "Cancelar",
+
+  "errorLoading": "Error al cargar datos",
+  "errorNetwork": "Error de red. Verifica tu conexión.",
+  "retry": "Reintentar"
+}
