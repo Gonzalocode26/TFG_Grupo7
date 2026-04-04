@@ -5,6 +5,7 @@ import '../../providers/search_provider.dart';
 import '../../../data/models/meal_type.dart';
 import 'widgets/food_result_row.dart';
 import 'widgets/food_details_sheet.dart';
+import 'widgets/search_skeleton.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   final MealType mealType;
@@ -97,9 +98,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Widget _buildResults(SearchState state, AppLocalizations l10n) {
     if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const SearchSkeleton();
     }
 
     if (state.errorMessage != null) {
