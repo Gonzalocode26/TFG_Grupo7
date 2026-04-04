@@ -9,6 +9,7 @@ import '../../../../data/models/food_details.dart';
 import '../../../../data/remote/services/fat_secret_food_service.dart';
 import '../../../../data/remote/services/translation_service.dart';
 import '../../../providers/diary_provider.dart';
+import 'food_details_skeleton.dart';
 
 class FoodDetailsSheet extends ConsumerStatefulWidget {
   final String foodId;
@@ -31,36 +32,28 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
 
   final TextEditingController _quantityController = TextEditingController(text: '1.0');
 
-  // Servicios
   final _service = FatSecretFoodService();
-  final _translationService = TranslationService(); // ← Instanciamos DeepL
+  final _translationService = TranslationService();
 
   @override
   void initState() {
     super.initState();
-    // Interceptamos la llamada para traducir antes de pintar
     _futureDetails = _loadAndTranslateFood(widget.foodId);
   }
 
-  // 👇 NUEVA FUNCIÓN MÁGICA DE TRADUCCIÓN 👇
   Future<FatSecretFoodDetails?> _loadAndTranslateFood(String id) async {
-    // 1. Obtenemos el alimento original en inglés
     final details = await _service.getFood(id);
     if (details == null) return null;
 
-    // 2. Detectamos el idioma del móvil
     final languageCode = ui.PlatformDispatcher.instance.locale.languageCode;
 
-    // Si es inglés, no gastamos peticiones a la API
     if (languageCode == 'en') return details;
 
-    // 3. Traducimos el nombre principal
     final translatedName = await _translationService.translate(
       details.foodName,
       languageCode,
     );
 
-    // 4. Traducimos todas las porciones en paralelo
     final translatedServings = await Future.wait(
       details.servings.serving.map((serving) async {
         final translatedDesc = await _translationService.translate(
@@ -71,7 +64,6 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
       }),
     );
 
-    // 5. Devolvemos una copia exacta del alimento pero con los textos en español
     return details.copyWith(
       foodName: translatedName,
       servings: details.servings.copyWith(serving: translatedServings),
@@ -121,7 +113,7 @@ class _FoodDetailsSheetState extends ConsumerState<FoodDetailsSheet> {
               future: _futureDetails,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const FoodDetailsSkeleton();
                 }
 
                 if (snapshot.hasError || snapshot.data == null) {
