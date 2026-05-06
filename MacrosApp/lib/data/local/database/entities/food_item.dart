@@ -8,6 +8,7 @@ class FoodItem {
   Id id = Isar.autoIncrement;
 
   late String name;
+  String? originalName;
   late double calories;
   late double protein;
   late double carbs;

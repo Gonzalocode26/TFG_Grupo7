@@ -6,6 +6,7 @@ import 'package:tfg_grupo7/l10n/app_localizations.dart'; // ← Import de traduc
 import '../../providers/stats_provider.dart';
 import '../../../data/models/stat_type.dart';
 import '../../../data/models/daily_chart_data.dart';
+import 'dart:ui' as ui;
 
 class StatsScreen extends ConsumerStatefulWidget {
   const StatsScreen({super.key});
@@ -31,7 +32,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(statsNotifierProvider);
     final notifier = ref.read(statsNotifierProvider.notifier);
-    final l10n = AppLocalizations.of(context)!; // ← Cargamos diccionario
+    final l10n = AppLocalizations.of(context)!;
 
     final selectedDate = state.selectedDate ?? DateTime.now();
     final dayData = state.filteredDays.firstOrNull;
@@ -55,7 +56,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
-                  _buildSegmentedControl(l10n), // ← Pasamos el diccionario
+                  _buildSegmentedControl(l10n),
                   const SizedBox(height: 16),
                   _buildWeekNavigator(state, notifier),
                   const SizedBox(height: 24),
@@ -78,13 +79,13 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${l10n.history} - ${DateFormat('MMM d').format(selectedDate)}', // ← Traducción aplicada
+                    '${l10n.history} - ${DateFormat('MMM d').format(selectedDate)}',
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   if (state.selectedDate != null)
                     TextButton(
                       onPressed: () => notifier.selectDate(null),
-                      child: Text(l10n.clearFilter), // ← Traducción aplicada
+                      child: Text(l10n.clearFilter), //
                     ),
                 ],
               ),
@@ -97,7 +98,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(32.0),
                   child: Text(
-                    l10n.noDataPeriod, // ← Traducción aplicada
+                    l10n.noDataPeriod,
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                 ),
@@ -118,7 +119,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8, bottom: 4),
                           child: Text(
-                            meal.type.getDisplayName(context).toUpperCase(), // ← Usamos traducción de MealType
+                            meal.type.getDisplayName(context).toUpperCase(),
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -148,7 +149,12 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                             color: Colors.white,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             child: ListTile(
-                              title: Text(food.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                              title: Text(
+                                  ui.PlatformDispatcher.instance.locale.languageCode == 'en'
+                                      ? (food.originalName ?? food.name)
+                                      : food.name,
+                                  style: const TextStyle(fontWeight: FontWeight.w600)
+                              ),
                               trailing: Text(
                                 '${_getFoodMacroValue(food).toInt()} ${_getMacroUnit()}',
                                 style: TextStyle(
@@ -205,7 +211,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
         segments: StatType.values.map((type) {
           return ButtonSegment<StatType>(
             value: type,
-            // 👇 Aquí usamos el helper que inyecta la traducción
             label: Text(_getStatName(type, l10n), style: const TextStyle(fontSize: 12), textAlign: TextAlign.center),
           );
         }).toList(),

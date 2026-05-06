@@ -6,6 +6,8 @@ import '../../data/local/database/entities/meal.dart';
 import '../../data/local/database/entities/food_item.dart';
 import '../../data/models/meal_type.dart';
 import '../../data/models/food_details.dart';
+import '../../data/remote/services/translation_service.dart';
+import 'dart:ui' as ui;
 
 part 'diary_provider.g.dart';
 
@@ -77,12 +79,22 @@ class DiaryNotifier extends _$DiaryNotifier {
     final day = state.value;
     if (day == null) return;
 
+    final locale = ui.PlatformDispatcher.instance.locale.languageCode;
+    final translationService = TranslationService();
+
+    String finalName = details.name;
+
+    if (locale != 'en') {
+      finalName = await translationService.translate(details.name, locale);
+    }
+
     // Encontrar la comida del tipo especificado
     final meal = day.meals.firstWhere((m) => m.type == mealType);
 
     // Crear FoodItem desde FoodDetails
     final foodItem = FoodItem()
-      ..name = details.name
+      ..name = finalName
+      ..originalName = details.name
       ..calories = details.calories
       ..protein = details.protein
       ..carbs = details.carbs
@@ -103,7 +115,6 @@ class DiaryNotifier extends _$DiaryNotifier {
   }
 
   /// Eliminar un alimento de una comida
-  /// Equivalente a deleteFood(_:meal:) de Swift
   Future<void> deleteFood(FoodItem food, Meal meal) async {
     await _isar.writeTxn(() async {
       meal.foods.remove(food);

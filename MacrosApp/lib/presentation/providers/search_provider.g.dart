@@ -6,12 +6,9 @@ part of 'search_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$searchNotifierHash() => r'044af4eedafec72b38410aea438c3e616da5d086';
+String _$searchNotifierHash() => r'6a11bd5706d09fc1148de755116e5ff36bb85bf2';
 
-/// Provider que maneja la búsqueda de alimentos
-/// Equivalente a SearchViewModel de Swift
-///
-/// Copied from [SearchNotifier].
+/// See also [SearchNotifier].
 @ProviderFor(SearchNotifier)
 final searchNotifierProvider =
     AutoDisposeNotifierProvider<SearchNotifier, SearchState>.internal(
